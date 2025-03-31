@@ -56,15 +56,38 @@ void * nextList(List * list)
     return NULL;
 }
 
-void * lastList(List * list) {
+void * lastList(List * list) 
+{
+    if (list->tail != NULL) {
+        list->current = list->tail;
+        return list->current->data;
+    }
     return NULL;
 }
 
-void * prevList(List * list) {
+void * prevList(List * list) 
+{
+    if (list->current != NULL) {
+        list->current = list->current->prev;
+        if (list->current != NULL) {
+            return list->current->data;
+        }
+    }
     return NULL;
 }
 
-void pushFront(List * list, void * data) {
+void pushFront(List * list, void * data) 
+{
+    Node * nuevo = createNode(data);
+    if (list->head == NULL) {
+        list->head = nuevo;
+        list->tail = nuevo;
+    } else {
+        nuevo->next = list->head;
+        list->head->prev = nuevo;
+        list->head = nuevo;
+    }
+    list->current = nuevo;
 }
 
 void pushBack(List * list, void * data) {
@@ -72,10 +95,28 @@ void pushBack(List * list, void * data) {
     pushCurrent(list,data);
 }
 
-void pushCurrent(List * list, void * data) {
+void pushCurrent(List * list, void * data) 
+{
+    Node * nuevo = createNode(data);
+    if (list->current == NULL) {
+        list->head = nuevo;
+        list->tail = nuevo;
+    } else {
+
+        nuevo->prev = list->current;
+        nuevo->next = list->current->next;
+        if (list->current->next != NULL) {
+            list->current->next->prev = nuevo;
+        } else {
+            list->tail = nuevo;
+        }
+        list->current->next = nuevo;
+    }
+    list->current = nuevo;
 }
 
-void * popFront(List * list) {
+void * popFront(List * list) 
+{
     list->current = list->head;
     return popCurrent(list);
 }
